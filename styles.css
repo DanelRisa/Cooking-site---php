@@ -1,0 +1,21 @@
+.login {
+        background-color: white;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+        
+    }
+
+    .info{
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+    }
+
+    .loginButton{
+        margin-top: 10px;
+    }
+
