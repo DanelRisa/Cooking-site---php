@@ -6,7 +6,7 @@
 		echo $ex->getMessage();
 	}
 
-	function registerUser($email, $password, $name, $role='user', $avatar='no-ava.jpg'){
+	function registerUser($email, $password, $name, $avatar='no-ava.jpg', $role='user'){
 
 		global $pdo;
 		$queryObj = $pdo->prepare("insert into users(email, password, name, role, avatar) values(:ue, :up, :un, :ur, :ua)");
@@ -61,8 +61,7 @@
 		return $categories;
 	}
 
-
-	function createPost($title, $content, $category_id, $user_id, $status='draft', $image='no-img.jpg'){
+	function createPost($title, $content, $category_id, $user_id,$image='no-img.jpg', $status='draft'){
 
 		global $pdo;
 		$queryObj = $pdo->prepare("insert into posts(title, content, category_id, user_id, status, image, created_at) values(:ptt, :pcn, :pci, :pui, :pst, :pim, :pca)");
@@ -90,8 +89,24 @@
 		global $pdo;
 
 		if($catId){
-			$queryObj = $pdo->prepare("select * from posts where category_id = ?");
+			$queryObj = $pdo->prepare("select posts.*, users.name from posts left join users on posts.user_id=users.id where posts.category_id = ?");
 			$queryObj->execute([$catId]);
+		}
+		else{
+			$queryObj = $pdo->query("select posts.*, users.name from posts left join users on posts.user_id=users.id");
+		}
+
+		
+		$posts = $queryObj->fetchAll(PDO::FETCH_ASSOC);
+		return $posts;
+	}
+
+	function searchPosts($search){
+		global $pdo;
+
+		if($search){
+			$queryObj = $pdo->prepare("select * from posts where title like :search OR content like :search");
+			$queryObj->execute(['search' => '%'.$search.'%']);
 		}
 		else{
 			$queryObj = $pdo->query("select * from posts");
@@ -108,6 +123,8 @@
 		$queryObj = $pdo->prepare("select * from posts where id = ?");
 		$queryObj->execute([$postId]);
 
+
+		
 		$post = $queryObj->fetch(PDO::FETCH_ASSOC);
 		return $post;
 	}
@@ -142,35 +159,95 @@
 		return $result;
 	}
 
+	function ratePost($user_id, $post_id, $rating){
+		global $pdo;
+		$queryObj = $pdo->prepare("select * from user_post where uid=:uid and pid=:pid");
 
+		try {
+			$queryObj->execute([
+				'uid' => $user_id,
+				'pid' => $post_id,
+			]);
+		}catch(PDOException $ex){
+			echo $ex->getMessage();
+			return false;
+		}
 
-    // function createComment($user_email, $text, $dateTime, $recipy_id, $db) {
-    //     if ($user_email == '') {
-    //         return "<h4><center>Select your e-mail id first!</h4></center>";
-    //     } elseif (empty($text)) {
-    //         return "<h4><center>Please fill out the Text fields first!</center></h4>";
-    //     } else {
-    //         $sql = "INSERT INTO commentbar(user_id, text, date_time, recipy_id) VALUES ('$user_email','$text','$dateTime','$recipy_id')";
-    //         if (mysqli_query($db, $sql)) {
-    //             return true; 
-    //         } else {
-    //             return "<h4><center>Error inserting comment!</center></h4>";
-    //         }
-    //     }
-    // }
+		$result = $queryObj->fetch(PDO::FETCH_ASSOC);
 
-    // function getCommentsByRecipeId($recipe_id, $db) {
-    //     $sql = "SELECT users.*, commentbar.* FROM signup, commentbar WHERE users.user_id = commentbar.user_id AND recipy_id='$recipe_id' ORDER BY id DESC";
-    //     $result = mysqli_query($db, $sql);
-    //     $comments = [];
-    //     while ($row = mysqli_fetch_assoc($result)) {
-    //         $comments[] = $row;
-    //     }
-    //     return $comments;
-    // }
-    
+		if($result){
+			$queryObj = $pdo->prepare("update user_post SET rating=:rating where uid=:uid and pid=:pid");
+		}
+		else{
+			$queryObj = $pdo->prepare("insert into user_post(uid, pid, rating) values(:uid, :pid, :rating)");
+		}
+
+		try {
+			$queryObj->execute([
+				'uid' => $user_id,
+				'pid' => $post_id,
+				'rating' => $rating,
+			]);
+		}catch(PDOException $ex){
+			echo $ex->getMessage();
+			return false;
+		}
+		return true;
+	}
+
+	function getRating($post_id){
+		global $pdo;
+		$queryObj = $pdo->prepare("select avg(rating) as rating from user_post where pid=:pid");
+
+		try {
+			$queryObj->execute([
+				'pid' => $post_id,
+			]);
+		}catch(PDOException $ex){
+			echo $ex->getMessage();
+			return false;
+		}
+		$result = $queryObj->fetch(PDO::FETCH_ASSOC);
+		return $result;
+	}
+
+	// commentbar
+
+	function addComment($post_id, $user_id, $comment) {
+		global $pdo;
+		$queryObj = $pdo->prepare("INSERT into comments (post_id, user_id, comment, created_at) VALUES (:pid, :uid, :com, NOW())");
+	
+		try {
+			$queryObj->execute([
+				'pid' => $post_id,
+				'uid' => $user_id,
+				'com' => $comment,
+			]);
+		} catch (PDOException $ex) {
+			echo $ex->getMessage();
+			return false;
+		}
+		$result = $queryObj->fetch(PDO::FETCH_ASSOC);
+		return $result;	}
+
+		function getComments($post_id) {
+			global $pdo;
+			$queryObj = $pdo->prepare("SELECT * FROM comments WHERE post_id = :pid");
+		
+			try {
+				$queryObj->execute(['pid' => $post_id]);
+				$comments = $queryObj->fetchAll(PDO::FETCH_ASSOC);
+				return $comments;
+			} catch (PDOException $ex) {
+				echo $ex->getMessage();
+				return []; // Return an empty array in case of an error
+			}
+		}
+		
 
 ?>
+
+		
 
 
 

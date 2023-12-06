@@ -1,12 +1,15 @@
 <?php
 
-	$id = $_POST['id'] ?? '';
+	if($_SERVER['REQUEST_METHOD'] == 'POST'){
+		$postId = $_POST['post_id'] ?? '';
 
-	require_once 'common/connect.php';
+		if($postId){
+			require_once 'common/connect.php';
 
-	if($id)
-		deletePost($id);
+			$result = deletePost($postId);
+			header("Location: index.php");
 
-	header("Location: index.php");
+		}
+	}
 
 ?>

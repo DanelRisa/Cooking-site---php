@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'common/connect.php';
+require_once '../common/connect.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = $_SESSION['user'];

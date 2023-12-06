@@ -2,7 +2,7 @@
 
 	session_start();
 	if (!isset($_SESSION['user'])) {
-		header('Location: Loginform.php');
+		header('Location: auth/Loginform.php');
 		exit();
 	}
 	if($_SERVER['REQUEST_METHOD'] == 'POST'){

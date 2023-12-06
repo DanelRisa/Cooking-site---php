@@ -6,7 +6,7 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
-require_once 'common/connect.php';
+require_once '../common/connect.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -61,7 +61,7 @@ if (isset($_SESSION['status']) && $_SESSION['status'] == 'error') {
     <?php if (isset($_SESSION['status']) && $_SESSION['status'] == 'success'): ?>
         <div class="alert alert-success">
             <?= $_SESSION['message'] ?>
-            <p>Lets have fun! <a href="index.php">Main page</a></p>
+            <p>Lets have fun! <a href="../index.php">Main page</a></p>
         </div>
     <?php endif; ?>
 

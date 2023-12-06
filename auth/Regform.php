@@ -40,7 +40,7 @@
             </div>
         <?php endif; ?>
 
-        <form action="Registration.php" method="POST">
+        <form action="Registration.php" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="name">Name</label>
                 <input type="text" name="name" id="name" class="form-control <?php if ($hasErrors && isset($errorMessages['name'])) echo 'errorHighlight'; ?>">
@@ -71,6 +71,13 @@
                 <?php if ($hasErrors && isset($errorMessages['confirm_password'])): ?>
                     <p class="inputError"><?= $errorMessages['confirm_password'] ?></p>
                 <?php endif; ?>
+            </div>
+            <div class="form-group">
+                    <label for="avatar">User Avatar</label>
+                    <input type="file" id="avatar" name="avatar" />
+                    <?php if($hasErrors && isset($errorMessages['errors']['avatar'])): ?>
+						<p class="inputError"><?= $errorMessages['errors']['avatar'] ?></p>
+					<?php endif; ?>
             </div>
             
             <button type="submit" class="btn btn-primary">Register</button>

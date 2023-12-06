@@ -31,14 +31,14 @@
         	header('Location: Loginform.php');
 		}
 		else {
-			require_once 'common/connect.php';
+			require_once '../common/connect.php';
 			$user = loginUser($email, $password);
 
 			if($user){
 				$_SESSION['status'] = 'success';
 	        	$_SESSION['message'] = 'You have logged in';
 	        	$_SESSION['user'] = $user;
-	        	header('Location: index.php');
+	        	header('Location: ../index.php');
 			}
 			else{
 				$_SESSION['status'] = 'mainError';

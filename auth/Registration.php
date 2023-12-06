@@ -49,27 +49,49 @@
 			}
 		}
 
+		$avatar = $_FILES['avatar']; // $avatar is an array
+
+		$time = time(); // $time = 1231232134
+        $avatar_name = $time . $avatar['name']; // $avatar_name = 1231232134girl.png
+        $avatar_tmp_name = $avatar['tmp_name']; // $avatar_tmp_name = C:\xampp\tmp\phpAE3C.tmp
+        $avatar_destination_path = '../images/avatars/' . $avatar_name;
+
+        $allowed_files = ['png', 'jpg', 'jpeg', 'webp'];
+        $extention = explode('.', $avatar_name); // [1231232134girl, png]
+        $extention = end($extention); // $extention = 'png'
+
+        if(in_array($extention, $allowed_files)){
+            if($avatar['size'] < 1000000){
+                move_uploaded_file($avatar_tmp_name, $avatar_destination_path);
+            }else{
+            	$errors['avatar'] = "File Size Too Big. Chose Less Than 1mb File..!";
+            }
+        }else{
+            $errors['avatar'] = "File Should Be PNG, JPG, JPEG or WEBP";
+        }
+
+
 		if($confirm_password != $password){
 			$errors['confirm_password'] = 'Error! Passwords does not match';
 		}
 		if($errors){
 			$_SESSION['status'] = 'error';
         	$_SESSION['errors'] = $errors;
-        	header('Location:Regform.php');
+        	header('Location: Regform.php');
 		}
 		else {
-			require_once 'common/connect.php';
-			$result = registerUser($email, $password, $name);
+			require_once '../common/connect.php';
+			$result = registerUser($email, $password, $name, $avatar_name);
 
 			if($result){
 				$_SESSION['status'] = 'success';
 	        	$_SESSION['message'] = 'You have successfully registered!';
-	        	header('Location:Loginform.php');
+	        	header('Location: Loginform.php');
 			}
 			else{
 				$_SESSION['status'] = 'error';
 	        	$_SESSION['errors'] = ['email' => 'Error! This email is in use'];
-	        	header('Location:Regform.php');
+	        	header('Location: Regform.php');
 			}
 		}
 	}

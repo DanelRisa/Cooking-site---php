@@ -6,7 +6,7 @@
     else {
         $_SESSION['status'] = 'mainError';
         $_SESSION['message'] = 'You need to login';
-        header("Location: Loginform.php");
+        header("Location: auth/Loginform.php");
     }
 
 ?>

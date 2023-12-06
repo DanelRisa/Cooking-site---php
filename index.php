@@ -2,15 +2,16 @@
 session_start();
 
 require_once 'common/connect.php';
+require_once 'common/check_login.php';
 
-if (!isset($_SESSION['user'])) {
-    header("Location: Loginform.php");
-    exit();
-}
+// if (!isset($_SESSION['user'])) {
+//     header("Location: auth/Loginform.php");
+//     exit();
+// }
 
 if (isset($_POST['logout'])) {
     unset($_SESSION['user']);
-    header("Location: Loginform.php");
+    header("Location: auth/Loginform.php");
     exit();
 }
 
@@ -31,14 +32,6 @@ else
     <title>Nyam</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            background-color: #f8f9fa;
-        }
-
         .user-icon {
             display: inline-block;
             height: 20px;
@@ -46,49 +39,31 @@ else
             margin-right: 5px;
             vertical-align: middle;
         }
-
-        .body-content {
-            margin: auto;
-            width: 80%;
-            min-height: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            padding: 10px;
-            margin-top: 20px;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 20px 0;
-            background-color: #f8f9fa;
-        }
-
-        .footer p {
-            margin: 0;
-        }
-
         .card-body form {
-                display: inline;
-            }
+            display: inline;
+        }
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
     </style>
 </head>
 <body>
-<div class="container">
-    <div>
-        <a href="index.php"><img src="images/logo.png" alt="Logo"></a>
+    <div class="container">
+        <div>
+            <a href="index.php"><img src="images/logo.png" alt="Logo"></a>
+        </div>
     </div>
-</div>
-
+    <?php require_once 'common/nav.php' ?>
+    
 <div class="container body-content">
-    <div class="alert alert-success" role="alert">
-        <img src='images/user.png' class='user-icon' alt='User Icon' />
-        You have successfully logged in!
-    </div>
+    
     <div>
         <form action="" method="post">
             <input type="submit" class="btn btn-danger" name="logout" value="Logout">
         </form>
-        <form action="change_password.php" method="post">
+        <form action="auth\change_password.php" method="post">
             <input type="submit" class="btn btn-primary" name="change_password" value="Change password">
         </form>
         <form action="createPostForm.php" method="post">
@@ -105,28 +80,34 @@ else
                     <div class="row">
                         <div class="col-lg-6 mx-auto">
                            
-    <?php if(empty($posts)): ?>
-        <h3>No posts found</h3>
-    <?php endif; ?>
-
-    <?php foreach($posts as $post): ?>
-    <div class="card mb-4">
-        <a href="#!"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-        <div class="card-body">
-            <div class="small text-muted"><?= $post['created_at'] ?></div>
-            <h2 class="card-title h4"><?= $post['title'] ?></h2>
-            <p class="card-text"><?= $post['content'] ?></p>
-            <a class="btn btn-primary" href="onePost.php?post_id=<?= $post['id'] ?>">Read →</a>
-            <a class="btn btn-info" href="editPostForm.php?post_id=<?= $post['id'] ?>">Edit →</a>
-
-            <form onsubmit="return confirm('want to detele?')" action="deletePost.php" method="post">
-                <input type="hidden" name="id" value="<?= $post['id'] ?>">
-                <button type="submit" class="btn btn-danger">Delete</button>
-            </form>
-        </div>
-    </div>
-
-    <?php endforeach; ?>
+                        <?php foreach($posts as $post): ?>
+                            
+                            <div class="card mb-4">
+                                <a href="#!"><img src="http://localhost/recipesproject/images/posts/<?= $post['image'] ?>" alt="Image" class="image"></a>
+                                <div class="card-body">
+                                    <div class="small text-muted"><?= $post['created_at'] ?></div>
+                                    <div class="small text-muted">author: <?=$post['name']?></div>
+                                    <h2 class="card-title h4"><?= $post['title'] ?></h2>
+                                    <p class="card-text"><?= $post['content'] ?></p>
+                                    <a class="btn btn-primary" href="onePost.php?post_id=<?= $post['id'] ?>">Read →</a>
+                                    
+                                    <?php if($post['user_id'] == $user['id']): ?>
+                    
+                                        <a class="btn btn-primary" href="editPostForm.php?post_id=<?= $post['id'] ?>">Edit →</a>
+                    
+                                    <form onsubmit="return confirm('Really want to delete?')" action="deletePost.php" method="post">
+                                        <input type="hidden" name="post_id" value="<?= $post['id']?>">
+                                        <button class="btn btn-danger" type="submit">
+                                            Delete
+                                        </button>
+                                    </form>
+                    
+                                    <?php endif; ?>
+                    
+                                </div>
+                            </div>
+                                                
+                                                 <?php endforeach; ?>
                             
 
                         </div>
@@ -158,7 +139,6 @@ else
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
-        <script src="js/scripts.js"></script>
    
 
     <!-- 
