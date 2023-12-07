@@ -48,9 +48,10 @@ $avg = getRating($postId); // $avg is an array
                         <div class="text-muted fst-italic mb-2"><?= $post['created_at'] ?></div>
 
                     </header>
-                    <!-- Preview image figure-->
-                    <img src="http://localhost/recipesproject/images/posts/<?= $post['image'] ?>" alt="Image" class="image">
-                    <!-- Post content-->
+                    <div class="card mb-4">
+                        <!-- Set a fixed height for the image -->
+                        <a href="#!"><img src="http://localhost/recipesproject/images/posts/<?= $post['image'] ?>" alt="Image" class="card-img-top" style="height: 300px; object-fit: cover;"></a>
+                        <div class="card-body">
                     <section class="mb-5">
                         <?= $post['content'] ?>
                     </section>

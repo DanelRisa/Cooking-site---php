@@ -69,69 +69,58 @@ else
         <form action="createPostForm.php" method="post">
             <input type="submit" class="btn btn-primary" name="createPostForm" value="Create Post">
         </form>
-
-
     </div>
-
     <div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8">
             <div class="row">
-                <div class="col-lg-8">
-                    
-                    <div class="row">
-                        <div class="col-lg-6 mx-auto">
-                           
-                        <?php foreach($posts as $post): ?>
+                <div class="col-lg-6 mx-auto">
+                <?php foreach($posts as $post): ?>
+                    <div class="card mb-4">
+                        <!-- Set a fixed height for the image -->
+                        <a href="#!"><img src="http://localhost/recipesproject/images/posts/<?= $post['image'] ?>" alt="Image" class="card-img-top" style="height: 300px; object-fit: cover;"></a>
+                        <div class="card-body">
+                            <div class="small text-muted"><?= $post['created_at'] ?></div>
+                            <div class="small text-muted">author: <?=$post['name']?></div>
+                            <h2 class="card-title h4"><?= $post['title'] ?></h2>
+                            <p class="card-text"><?= $post['content'] ?></p>
+                            <a class="btn btn-primary" href="onePost.php?post_id=<?= $post['id'] ?>">Read →</a>
                             
-                            <div class="card mb-4">
-                                <a href="#!"><img src="http://localhost/recipesproject/images/posts/<?= $post['image'] ?>" alt="Image" class="image"></a>
-                                <div class="card-body">
-                                    <div class="small text-muted"><?= $post['created_at'] ?></div>
-                                    <div class="small text-muted">author: <?=$post['name']?></div>
-                                    <h2 class="card-title h4"><?= $post['title'] ?></h2>
-                                    <p class="card-text"><?= $post['content'] ?></p>
-                                    <a class="btn btn-primary" href="onePost.php?post_id=<?= $post['id'] ?>">Read →</a>
-                                    
-                                    <?php if($post['user_id'] == $user['id']): ?>
-                    
-                                        <a class="btn btn-primary" href="editPostForm.php?post_id=<?= $post['id'] ?>">Edit →</a>
-                    
-                                    <form onsubmit="return confirm('Really want to delete?')" action="deletePost.php" method="post">
-                                        <input type="hidden" name="post_id" value="<?= $post['id']?>">
-                                        <button class="btn btn-danger" type="submit">
-                                            Delete
-                                        </button>
-                                    </form>
-                    
-                                    <?php endif; ?>
-                    
-                                </div>
-                            </div>
-                                                
-                                                 <?php endforeach; ?>
-                            
-
+                            <?php if($post['user_id'] == $user['id']): ?>
+                            <a class="btn btn-primary" href="editPostForm.php?post_id=<?= $post['id'] ?>">Edit →</a>
+                            <form onsubmit="return confirm('Really want to delete?')" action="deletePost.php" method="post">
+                                <input type="hidden" name="post_id" value="<?= $post['id']?>">
+                                <button class="btn btn-danger" type="submit">
+                                    Delete
+                                </button>
+                            </form>
+                            <?php endif; ?>
                         </div>
                     </div>
-                    <!-- Pagination-->
-                    <nav aria-label="Pagination">
-                        <hr class="my-0" />
-                        <ul class="pagination justify-content-center my-4">
-                            <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Newer</a></li>
-                            <li class="page-item active" aria-current="page"><a class="page-link" href="#!">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#!">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#!">3</a></li>
-                            <li class="page-item disabled"><a class="page-link" href="#!">...</a></li>
-                            <li class="page-item"><a class="page-link" href="#!">15</a></li>
-                            <li class="page-item"><a class="page-link" href="#!">Older</a></li>
-                        </ul>
-                    </nav>
-                </div>
-                <!-- Side widgets-->
-                <div class="col-lg-4">
-                    <?php require_once 'common/aside.php'; ?>
+                    <?php endforeach; ?>
                 </div>
             </div>
+            <!-- Pagination-->
+            <nav aria-label="Pagination">
+                <hr class="my-0" />
+                <ul class="pagination justify-content-center my-4">
+                    <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Newer</a></li>
+                    <li class="page-item active" aria-current="page"><a class="page-link" href="#!">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#!">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#!">3</a></li>
+                    <li class="page-item disabled"><a class="page-link" href="#!">...</a></li>
+                    <li class="page-item"><a class="page-link" href="#!">15</a></li>
+                    <li class="page-item"><a class="page-link" href="#!">Older</a></li>
+                </ul>
+            </nav>
         </div>
+        <!-- Side widgets-->
+        <div class="col-lg-4">
+            <?php require_once 'common/aside.php'; ?>
+        </div>
+    </div>
+</div>
+
         <!-- Footer-->
         <footer class="py-5 bg-dark">
             <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2023</p></div>
