@@ -60,9 +60,9 @@ else
 <div class="container body-content">
     
     <div>
-        <form action="" method="post">
+        <!-- <form action="" method="post">
             <input type="submit" class="btn btn-danger" name="logout" value="Logout">
-        </form>
+        </form> -->
         <form action="auth\change_password.php" method="post">
             <input type="submit" class="btn btn-primary" name="change_password" value="Change password">
         </form>

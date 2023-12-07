@@ -1,15 +1,21 @@
 <?php
 session_start();
-include 'db.php';
 
-if (!isset($_SESSION['authenticated'])) {
-    header('Location: Loginform.php');
+require_once 'common/connect.php';
+require_once 'common/check_login.php';
+
+// if (!isset($_SESSION['user'])) {
+//     header("Location: auth/Loginform.php");
+//     exit();
+// }
+
+if (isset($_POST['logout'])) {
+    unset($_SESSION['user']);
+    header("Location: auth/Loginform.php");
     exit();
 }
 
-$user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,10 +35,9 @@ $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
                             <?php echo isset($user['name']) ? $user['name'] : 'User'; ?>!</h1>
                     </div>
                     <div class="card-body">
-                        <img src="Youre-welcome.png" alt="image" class="img-fluid rounded-circle mb-4" width="300">
-                        
-                        <form action="Logout.php" method="POST">
-                            <button class="btn btn-primary">Logout</button>
+                    <img src="http://localhost/recipesproject/images/avatars/<?=$user['avatar']?>" alt="Avatar" class="avatar">
+                         <form action="" method="post">
+                            <input type="submit" class="btn btn-danger" name="logout" value="Logout">
                         </form>
                     </div>
                 </div>

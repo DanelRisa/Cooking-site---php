@@ -38,7 +38,10 @@
 				$_SESSION['status'] = 'success';
 	        	$_SESSION['message'] = 'You have logged in';
 	        	$_SESSION['user'] = $user;
-	        	header('Location: ../index.php');
+	        	if($user['role'] == 'user')
+	        		header('Location:../index.php');
+	        	else
+	        		header('Location:../indexAdmin.php');
 			}
 			else{
 				$_SESSION['status'] = 'mainError';

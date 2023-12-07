@@ -232,7 +232,10 @@
 
 		function getComments($post_id) {
 			global $pdo;
-			$queryObj = $pdo->prepare("SELECT * FROM comments WHERE post_id = :pid");
+			$queryObj = $pdo->prepare("SELECT comments.*, users.name AS user_name, users.avatar AS user_avatar
+									   FROM comments 
+									   LEFT JOIN users ON comments.user_id = users.id
+									   WHERE post_id = :pid");
 		
 			try {
 				$queryObj->execute(['pid' => $post_id]);
@@ -240,9 +243,43 @@
 				return $comments;
 			} catch (PDOException $ex) {
 				echo $ex->getMessage();
-				return []; // Return an empty array in case of an error
+				return []; 
 			}
 		}
+		
+		function deleteComment($comment_id, $user_role, $user_id){
+			global $pdo;
+		
+			if ($user_role === 'admin') {
+				$queryObj = $pdo->prepare("DELETE FROM comments WHERE id = ?");
+				$result = $queryObj->execute([$comment_id]);
+				return $result;
+			} else {
+				$queryObj = $pdo->prepare("DELETE FROM comments WHERE id = ? AND user_id = ?");
+				$result = $queryObj->execute([$comment_id, $user_id]);
+				return $result;
+			}
+		}
+
+		function editComment($comment_id, $new_comment){
+			global $pdo;
+			
+			$queryObj = $pdo->prepare("UPDATE comments SET comment = :new_comment WHERE id = :comment_id");
+		
+			try {
+				$queryObj->execute([
+					'new_comment' => $new_comment,
+					'comment_id' => $comment_id,
+				]);
+			} catch (PDOException $ex) {
+				echo $ex->getMessage();
+				return false;
+			}
+			return true;
+		}
+		
+		
+		
 		
 
 ?>

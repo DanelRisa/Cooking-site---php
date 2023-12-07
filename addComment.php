@@ -9,14 +9,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user_id = $user['id'];
     $comment = $_POST['comment'] ?? '';
 
-    if ($post_id && $comment !== '') {
+    if (($post_id && $comment) !== '') {
         if (isset($user['id'])) {
             $result = addComment($post_id, $user_id, $comment);
-            if ($result) {
                 header("Location: onePost.php?post_id=$post_id");
             } 
         }
     }
 
-}
 ?>
