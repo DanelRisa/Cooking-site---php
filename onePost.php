@@ -16,6 +16,7 @@ $comment_id = $_POST['comment_id'] ?? '';
 
 if ($postId)
     $post = getOnePost($postId);
+
 $avg = getRating($postId); // $avg is an array
 
 ?>
@@ -97,7 +98,16 @@ $avg = getRating($postId); // $avg is an array
                                                     <button type="submit" class="btn btn-info my-1">Delete</button>
                                                 </form>
                                                 <?php endif; ?>
-                                            <?php endforeach; ?>
+                                                <?php if ($_SESSION['user']['id'] === $comment['user_id'] || $_SESSION['user']['role'] === 'admin') : ?>
+                                                            <button onclick="showEditForm(<?= $comment['id'] ?>)">Edit</button>
+                                                        <?php endif; ?>
+                                                        <form action="editComment.php" method="post" id="editForm_<?= $comment['id'] ?>" style="display: none;">
+                                                            <input type="hidden" name="comment_id" value="<?= $comment['id'] ?>">
+                                                            <textarea name="edited_comment" rows="3"><?= $comment['comment'] ?></textarea>
+                                                            <button type="submit">Save</button>
+                                                        </form>
+                                                    </div>
+                                                <?php endforeach; ?>
                                         </ul>
                                     <?php else : ?>
                                         <p>No comments yet.</p>
@@ -116,6 +126,16 @@ $avg = getRating($postId); // $avg is an array
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    function showEditForm(commentId) {
+        var editForm = document.getElementById('editForm_' + commentId);
+        if (editForm.style.display === 'none') {
+            editForm.style.display = 'block';
+        } else {
+            editForm.style.display = 'none';
+        }
+    }
+</script>
 </body>
 
 </html>

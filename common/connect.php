@@ -61,7 +61,7 @@
 		return $categories;
 	}
 
-	function createPost($title, $content, $category_id, $user_id,$image='no-img.jpg', $status='draft'){
+	function createPost($title, $content, $category_id, $user_id,$image='no-img.jpg', $status='pending'){
 
 		global $pdo;
 		$queryObj = $pdo->prepare("insert into posts(title, content, category_id, user_id, status, image, created_at) values(:ptt, :pcn, :pci, :pui, :pst, :pim, :pca)");
@@ -85,21 +85,65 @@
 		return true;
 	}
 
+	
+	function getPendingPosts() {
+		global $pdo;
+		$queryObj = $pdo->prepare("SELECT * FROM posts WHERE status = 'pending'");
+		$queryObj->execute();
+		$pendingPosts = $queryObj->fetchAll(PDO::FETCH_ASSOC);
+		return $pendingPosts;
+	}
+	
+	function getApprovedPosts() {
+		global $pdo;
+		$queryObj = $pdo->prepare("SELECT * FROM posts WHERE status = 'approved'");
+		$queryObj->execute();
+		$approvedPosts = $queryObj->fetchAll(PDO::FETCH_ASSOC);
+		return $approvedPosts;
+	}
+
 	function getPosts($catId = null){
 		global $pdo;
-
+	
 		if($catId){
-			$queryObj = $pdo->prepare("select posts.*, users.name from posts left join users on posts.user_id=users.id where posts.category_id = ?");
+			$queryObj = $pdo->prepare("SELECT posts.*, users.name 
+									   FROM posts 
+									   LEFT JOIN users ON posts.user_id=users.id 
+									   WHERE posts.category_id = ? AND posts.status = 'approved'");
 			$queryObj->execute([$catId]);
+		} else {
+			$queryObj = $pdo->prepare("SELECT posts.*, users.name 
+									   FROM posts 
+									   LEFT JOIN users ON posts.user_id=users.id 
+									   WHERE posts.status = 'approved'");
+			$queryObj->execute();
 		}
-		else{
-			$queryObj = $pdo->query("select posts.*, users.name from posts left join users on posts.user_id=users.id");
-		}
-
-		
+	
 		$posts = $queryObj->fetchAll(PDO::FETCH_ASSOC);
 		return $posts;
 	}
+	
+
+	function getPostsForModeration(){
+		global $pdo;
+	
+		$queryObj = $pdo->prepare("SELECT posts.*, users.name FROM posts LEFT JOIN users ON posts.user_id = users.id WHERE posts.status = 'moderation'");
+		$queryObj->execute();
+	
+		$posts = $queryObj->fetchAll(PDO::FETCH_ASSOC);
+		return $posts;
+	}
+	
+	function approvePost($postId){
+		global $pdo;
+	
+		$queryObj = $pdo->prepare("UPDATE posts SET status = 'approved' WHERE id = ?");
+		$result = $queryObj->execute([$postId]);
+	
+		return $result;
+	}
+
+	
 
 	function searchPosts($search){
 		global $pdo;
@@ -129,7 +173,7 @@
 		return $post;
 	}
 
-	function editPost($id, $title, $content, $category_id, $status='draft', $image='no-img.jpg'){
+	function editPost($id, $title, $content, $category_id, $status='pending', $image='no-img.jpg'){
 
 		global $pdo;
 		$queryObj = $pdo->prepare("update posts SET title=:ptt, content=:pcn, category_id=:pci, status=:pst, image=:pim where id=:pid");
@@ -211,8 +255,6 @@
 		return $result;
 	}
 
-	// commentbar
-
 	function addComment($post_id, $user_id, $comment) {
 		global $pdo;
 		$queryObj = $pdo->prepare("INSERT into comments (post_id, user_id, comment, created_at) VALUES (:pid, :uid, :com, NOW())");
@@ -261,9 +303,9 @@
 			}
 		}
 
-		function editComment($comment_id, $new_comment){
+		function editComment($comment_id, $new_comment) {
 			global $pdo;
-			
+		
 			$queryObj = $pdo->prepare("UPDATE comments SET comment = :new_comment WHERE id = :comment_id");
 		
 			try {
@@ -274,12 +316,8 @@
 			} catch (PDOException $ex) {
 				echo $ex->getMessage();
 				return false;
-			}
-			return true;
+			}	
 		}
-		
-		
-		
 		
 
 ?>

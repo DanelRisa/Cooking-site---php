@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'common/checkAdmin.php';
+require_once 'common/checkModerator.php';
 require_once 'common/connect.php';
 
 $categories = [];
@@ -15,10 +15,12 @@ try {
 } catch (PDOException $ex) {
     echo $ex->getMessage();
 }
+
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -31,8 +33,9 @@ try {
         }
     </style>
 </head>
+
 <body>
-    <?php require_once 'common/navAdmin.php' ?>
+    <?php require_once 'common/navModerator.php' ?>
     <div class="container py-4">
         <div class="row">
             <div class="col-lg-6">
@@ -68,39 +71,17 @@ try {
                     <button type="submit" name="add">Add category</button>
                 </form>
             </div>
-
-            <div class="col-lg-6">
-                <h1>Users</h1>
-
-                <?php if (!empty($users)) : ?>
-                    <ul>
-                        <?php foreach ($users as $user) : ?>
-                            <li>
-                                <?php echo $user['name']; ?> - <?php echo $user['role']; ?>
-                                <form method="post" action="changeUserRole.php">
-                                    <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
-                                    <select name="new_role">
-                                        <option value="admin" <?php if ($user['role'] === 'admin') echo 'selected'; ?>>Admin</option>
-                                        <option value="user" <?php if ($user['role'] === 'user') echo 'selected'; ?>>User</option>
-                                    </select>
-                                    <button type="submit" name="change_role">Change Role</button>
-                                </form>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
-                <?php else : ?>
-                    <p>No users found.</p>
-                <?php endif; ?>
-            </div>
         </div>
     </div>
-
+   
     <footer class="py-5 bg-dark">
         <div class="container">
             <p class="m-0 text-center text-white">Copyright &copy; Your Website 2023</p>
         </div>
     </footer>
-
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/scripts.js"></script>
 </body>
+
 </html>

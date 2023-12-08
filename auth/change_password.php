@@ -9,8 +9,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $confirmNewPassword = $_POST['confirm_new_password'] ?? '';
 
     $errors = [];
-
-    // empty fields
     if (empty($currentPassword)) {
         $errors['current_password'] = ' Empty! current password';
     }

@@ -38,12 +38,15 @@
 				$_SESSION['status'] = 'success';
 	        	$_SESSION['message'] = 'You have logged in';
 	        	$_SESSION['user'] = $user;
-	        	if($user['role'] == 'user')
-	        		header('Location:../index.php');
-	        	else
-	        		header('Location:../indexAdmin.php');
-			}
-			else{
+				
+				if ($user['role'] == 'user') {
+					header('Location: ../index.php');
+				} elseif ($user['role'] == 'admin') {
+					header('Location: ../indexAdmin.php');
+				} elseif ($user['role'] == 'moderator') {
+					header('Location: ../indexModerator.php');
+				}			
+			}else{
 				$_SESSION['status'] = 'mainError';
 	        	$_SESSION['message'] = 'No user with this email and password. You need to regitrate';
 	        	header('Location: Loginform.php');

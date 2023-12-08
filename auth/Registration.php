@@ -49,16 +49,16 @@
 			}
 		}
 
-		$avatar = $_FILES['avatar']; // $avatar is an array
+		$avatar = $_FILES['avatar']; 
 
-		$time = time(); // $time = 1231232134
-        $avatar_name = $time . $avatar['name']; // $avatar_name = 1231232134girl.png
-        $avatar_tmp_name = $avatar['tmp_name']; // $avatar_tmp_name = C:\xampp\tmp\phpAE3C.tmp
+		$time = time(); 
+        $avatar_name = $time . $avatar['name']; 
+        $avatar_tmp_name = $avatar['tmp_name']; 
         $avatar_destination_path = '../images/avatars/' . $avatar_name;
 
         $allowed_files = ['png', 'jpg', 'jpeg', 'webp'];
-        $extention = explode('.', $avatar_name); // [1231232134girl, png]
-        $extention = end($extention); // $extention = 'png'
+        $extention = explode('.', $avatar_name); 
+        $extention = end($extention); 
 
         if(in_array($extention, $allowed_files)){
             if($avatar['size'] < 1000000){

@@ -13,15 +13,27 @@ if (isset($_POST['logout'])) {
     unset($_SESSION['user']);
     header("Location: auth/Loginform.php");
     exit();
+
+
+// Остальной код вашей страницы index.php
+
 }
 
 $categories = getCategories();
 
-$cat_id = $_GET['cat_id'] ?? '';
-if($cat_id)
-    $posts = getPosts($cat_id);
-else
-    $posts = getPosts();
+    $search = $_POST['search'] ?? '';
+
+    if($search){
+        $posts = searchPosts($search);
+    }
+    else {
+        $catId = $_GET['cat_id'] ?? null;
+
+        if($catId)
+            $posts = getPosts($catId);
+        else
+            $posts = getPosts();
+    }
 
 ?>
 
@@ -55,7 +67,15 @@ else
             <a href="index.php"><img src="images/logo.png" alt="Logo"></a>
         </div>
     </div>
-    <?php require_once 'common/nav.php' ?>
+     <?php if(isset($_SESSION['user'])) {
+    if($_SESSION['user']['role'] === 'admin') {
+        require_once 'common/navAdmin.php';
+    } elseif($_SESSION['user']['role'] === 'moderator') {
+        require_once 'common/navModerator.php';
+    } else {
+        require_once 'common/nav.php';
+    }
+} ?>
     
 <div class="container body-content">
     
@@ -66,9 +86,9 @@ else
         <form action="auth\change_password.php" method="post">
             <input type="submit" class="btn btn-primary" name="change_password" value="Change password">
         </form>
-        <form action="createPostForm.php" method="post">
+        <!-- <form action="createPostForm.php" method="post">
             <input type="submit" class="btn btn-primary" name="createPostForm" value="Create Post">
-        </form>
+        </form> -->
     </div>
     <div class="container py-4">
     <div class="row">
@@ -86,7 +106,7 @@ else
                             <p class="card-text"><?= $post['content'] ?></p>
                             <a class="btn btn-primary" href="onePost.php?post_id=<?= $post['id'] ?>">Read →</a>
                             
-                            <?php if($post['user_id'] == $user['id']): ?>
+                            <?php if($_SESSION['user']['role'] === 'admin' || $_SESSION['user']['role'] === 'moderator'|| $post['user_id'] == $user['id']): ?>
                             <a class="btn btn-primary" href="editPostForm.php?post_id=<?= $post['id'] ?>">Edit →</a>
                             <form onsubmit="return confirm('Really want to delete?')" action="deletePost.php" method="post">
                                 <input type="hidden" name="post_id" value="<?= $post['id']?>">
@@ -100,7 +120,6 @@ else
                     <?php endforeach; ?>
                 </div>
             </div>
-            <!-- Pagination-->
             <nav aria-label="Pagination">
                 <hr class="my-0" />
                 <ul class="pagination justify-content-center my-4">
@@ -114,20 +133,17 @@ else
                 </ul>
             </nav>
         </div>
-        <!-- Side widgets-->
         <div class="col-lg-4">
             <?php require_once 'common/aside.php'; ?>
         </div>
     </div>
 </div>
 
-        <!-- Footer-->
         <footer class="py-5 bg-dark">
             <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2023</p></div>
-        </footer>
-        <!-- Bootstrap core JS-->
+	</footer>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Core theme JS-->
+        
    
 
     <!-- 
