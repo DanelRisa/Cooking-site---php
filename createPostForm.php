@@ -4,20 +4,22 @@ session_start();
 
 require_once 'common/check_login.php';
 require_once 'common/connect.php';
+require_once 'common/checkNav.php';
+
 
 
 $categories = getCategories();
-$hasErrors = false;
-$errorMessages = [];
+// $hasErrors = false;
+// $errorMessages = $_SESSION['errors'] ?? [];
+// $hasErrors = !empty($errorMessages);
 
-if (isset($_SESSION['status']) && $_SESSION['status'] == 'error') {
-    $hasErrors = true;
-    if (isset($_SESSION['errors'])) {
-        $errorMessages = $_SESSION['errors'];
-    }
-}
 ?>
 
+    <?php
+    $errorMessages = $_SESSION['errors'] ?? [];
+
+    $hasErrors = !empty($errorMessages);
+    ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -29,7 +31,6 @@ if (isset($_SESSION['status']) && $_SESSION['status'] == 'error') {
 </head>
 
 <body>
-    <?php require_once 'common/nav.php' ?>
     <div class="container py-4">
         <div class="row">
             <div class="col-lg-8">
@@ -55,11 +56,11 @@ if (isset($_SESSION['status']) && $_SESSION['status'] == 'error') {
 
                         </select>
                     </div>
-                    <div class="form-group">
+                    <div class="field-group">
                     <label for="image">Post Image</label>
                     <input type="file" id="image" name="image" />
-                    <?php if($hasErrors && isset($errorMessages['errors']['image'])): ?>
-						<p class="inputError"><?= $errorMessages['errors']['image'] ?></p>
+                    <?php if($hasErrors && isset($_SESSION['errors']['image'])): ?>
+						<p class="inputError"><?= $_SESSION['errors']['image'] ?></p>
 					<?php endif; ?>
                     </div>
 

@@ -14,9 +14,6 @@ if (isset($_POST['logout'])) {
     header("Location: auth/Loginform.php");
     exit();
 
-
-// Остальной код вашей страницы index.php
-
 }
 
 $categories = getCategories();
@@ -59,6 +56,7 @@ $categories = getCategories();
             height: 50px;
             border-radius: 50%;
         }
+        
     </style>
 </head>
 <body>
@@ -80,15 +78,9 @@ $categories = getCategories();
 <div class="container body-content">
     
     <div>
-        <!-- <form action="" method="post">
-            <input type="submit" class="btn btn-danger" name="logout" value="Logout">
-        </form> -->
         <form action="auth\change_password.php" method="post">
             <input type="submit" class="btn btn-primary" name="change_password" value="Change password">
         </form>
-        <!-- <form action="createPostForm.php" method="post">
-            <input type="submit" class="btn btn-primary" name="createPostForm" value="Create Post">
-        </form> -->
     </div>
     <div class="container py-4">
     <div class="row">
@@ -97,7 +89,16 @@ $categories = getCategories();
                 <div class="col-lg-6 mx-auto">
                 <?php foreach($posts as $post): ?>
                     <div class="card mb-4">
-                        <!-- Set a fixed height for the image -->
+                    <form action="addFav.php" method="post">
+    <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
+    <!-- Изображение сердца в качестве кнопки -->
+    <button type="submit" name="add_fav" style="background: none; border: none;">
+        <img src="heart.png" alt="Add to Favorites" width="30" height="30">
+    </button>
+                    </form>
+                        
+
+
                         <a href="#!"><img src="http://localhost/recipesproject/images/posts/<?= $post['image'] ?>" alt="Image" class="card-img-top" style="height: 300px; object-fit: cover;"></a>
                         <div class="card-body">
                             <div class="small text-muted"><?= $post['created_at'] ?></div>
@@ -129,7 +130,6 @@ $categories = getCategories();
                     <li class="page-item"><a class="page-link" href="#!">3</a></li>
                     <li class="page-item disabled"><a class="page-link" href="#!">...</a></li>
                     <li class="page-item"><a class="page-link" href="#!">15</a></li>
-                    <li class="page-item"><a class="page-link" href="#!">Older</a></li>
                 </ul>
             </nav>
         </div>
@@ -138,141 +138,13 @@ $categories = getCategories();
         </div>
     </div>
 </div>
-
-        <footer class="py-5 bg-dark">
-            <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2023</p></div>
-	</footer>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-        
-   
-
-    <!-- 
-        <div class="body">
-	
-		<div>
-			<div class="header">
-				<ul>
-					<li class="current">
-						<a href="index.php">Home</a>
-					</li>
-					<li>
-						<a href="recipes.php">Recipes</a>
-					</li>
-					<li>
-							<a href="featured.php">Recipe of Month</a>
-					</li>
-					
-					<li>
-						<a href="about.php">About</a>
-					</li>
-					
-					
-					
-				</ul>
-			</div>
-			<div class="body">
-				<div>
-					<a href="index.php"><img src="images/turkey.jpg" alt="Image"></a>
-				</div>
-				<ul>
-					<li class="current">
-						<a href="blog.php"><img src="images/holi-turkey.jpg" alt="Image"></a>
-						<div>
-							<h2><a href="blog.php">Holy Turkey</a></h2>
-							<p>
-								Tuck wings under turkey
-								
-							</p>
-						</div>
-					</li>
-					<li>
-						<a href="blog.php"><img src="images/fruits-and-bread.jpg" alt="Image"></a>
-						<div>
-							<h2><a href="blog.php">Fruits &amp; Bread</a></h2>
-							<p>
-								Fresh Fruit Bread Recipe
-							</p>
-						</div>
-					</li>
-					<li>
-						<a href="blog.php"><img src="images/dessert.jpg" alt="Image"></a>
-						<div>
-							<h2><a href="blog.php">Dessert</a></h2>
-							<p>
-								5 Quick-and-Easy Dessert Recipes
-							</p>
-						</div>
-					</li>
-				</ul>
-			</div>
-			<div class="footer">
-				<ul>
-				<li>
-						<h2><a href="recipes.php"> Recipes</a></h2>
-						<a href="recipes.php"><img src="images/a-z.jpg" alt="Image"></a>
-					</li>
-					<li>
-						<h2><a href="featured.php">Featured Recipes</a></h2>
-						<a href="featured.php"><img src="images/featured.jpg" alt="Image"></a>
-					</li>
-					
-				</ul>
-				<ul>
-					<li>
-						<h2><a href="videos.php">Videos</a></h2>
-						<a href="videos.php"><img src="images/videos.jpg" alt="Image"></a>
-					</li>
-					<li>
-						<h2><a href="blog.php">Blog</a></h2>
-						<a href="blog.php"><img src="images/blog.jpg" alt="Image"></a>
-					</li>
-				</ul>
-			</div>
-		</div>
-		<div>
-			<div>
-				<h3>Cooking Video</h3>
-				<a href="videos.php"><img src="images/cooking-video.png" alt="Image"></a>
-				<span>Vegetable &amp; Rice Topping</span>
-			</div>
-			<div>
-				<h3>Featured Recipes</h3>
-				<ul id="featured">
-					<li>
-						<a href="recipes.php"><img src="images/sandwich.jpg" alt="Image"></a>
-						<div>
-							<h2><a href="recipes.php">Ham Sandwich</a></h2>
-							<span>by: Anna</span>
-						</div>
-					</li>
-					<li>
-						<a href="recipes.php"><img src="images/biscuit-and-coffee.jpg" alt="Image"></a>
-						<div>
-							<h2><a href="recipes.php">Biscuit &amp; Sandwich</a></h2>
-							<span>by: Sarah</span>
-						</div>
-					</li>
-					<li>
-						<a href="recipes.php"><img src="images/pizza.jpg" alt="Image"></a>
-						<div>
-							<h2><a href="recipes.php">Delicious Pizza</a></h2>
-							<span>by: Rico</span>
-						</div>
-					</li>
-				</ul>
-			</div>
-			 -->
-			
-				<!-- <h3>Settings</h3>
-				<form action="" method="post">
-            	<input type="submit" name="logout" value="Logout">
-        		</form>
-
-				<form action="change_password.php" method="post">
-            	<input type="submit" name="change_password" value="Change password">
-        		</form> -->
-				
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>				
 		</div>
 	</div>
+	<footer class="py-5 bg-dark">
+        <div class="container">
+            <p class="m-0 text-center text-white">&copy; Your Website <?php echo date('Y'); ?></p>
+        </div>
+    </footer>
 </body>
 </html>

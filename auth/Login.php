@@ -36,7 +36,7 @@
 
 			if($user){
 				$_SESSION['status'] = 'success';
-	        	$_SESSION['message'] = 'You have logged in';
+	        	//$_SESSION['message'] = 'You have logged in';
 	        	$_SESSION['user'] = $user;
 				
 				if ($user['role'] == 'user') {
@@ -53,6 +53,6 @@
 			}
 		}
 	}
-  
+
 
 ?>

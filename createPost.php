@@ -4,6 +4,7 @@ session_start();
 
 require_once 'common/check_login.php';
 
+$errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -35,6 +36,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	require_once 'common/connect.php';
 	$result = createPost($title, $content, $category_id, $user_id, $image_name);
 
-	if ($result)
+	if (empty($errors)) {
 		header("Location: index.php");
+		exit();
+	} else {
+		$_SESSION['errors'] = $errors;
+		header("Location: createPostForm.php");
+		exit();
+	}
+	
 }
+
+?>

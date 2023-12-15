@@ -14,6 +14,8 @@
                         <li class="nav-item"><a class="nav-link" href="createPostForm.php">Create | </a></li>
                         <li class="nav-item"><a class="nav-link" href="Profile.php">Profile | </a></li>
                         <li class="nav-item"><a class="nav-link" href="getPending.php">Pending Posts | </a></li>
+                        <li class="nav-item"><a class="nav-link" href="fav.php">Favourites | </a></li>
+
 
 
                         

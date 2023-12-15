@@ -18,78 +18,74 @@
     </style>
 </head>
 <body>
+    
+<?php session_start(); ?>
+<?php
+$hasErrors = false;
+$errorMessages = $_SESSION['errors'] ?? [];
 
-    <?php
-    session_start();
+if(isset($_SESSION['status']) && $_SESSION['status'] == 'error') {
+    $hasErrors = true;
+}
+?>
 
-    $hasErrors = false;
-    $errorMessages = [];
+<div class="container centerForm">
+    <?php if (isset($_SESSION['status']) && $_SESSION['status'] == 'success'): ?>
+        <div class="alert alert-success">
+            <?= $_SESSION['message'] ?>
+        </div>
+    <?php endif; ?>
 
-    if (isset($_SESSION['status']) && $_SESSION['status'] == 'error') {
-        $hasErrors = true;
-        if (isset($_SESSION['errors'])) {
-            $errorMessages = $_SESSION['errors'];
-        }
-    }
-    ?>
+    <form action="Registration.php" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" name="name" id="name" class="form-control <?php if ($hasErrors && isset($errorMessages['name'])) echo 'errorHighlight'; ?>">
+            <?php if ($hasErrors && isset($errorMessages['name'])): ?>
+                <p class="inputError"><?= $errorMessages['name'] ?></p>
+            <?php endif; ?>
+        </div>
 
-    <div class="container centerForm">
-        <?php if (isset($_SESSION['status']) && $_SESSION['status'] == 'success'): ?>
-            <div class="alert alert-success">
-                <?= $_SESSION['message'] ?>
-            </div>
-        <?php endif; ?>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" class="form-control <?php if ($hasErrors && isset($errorMessages['email'])) echo 'errorHighlight'; ?>">
+            <?php if ($hasErrors && isset($errorMessages['email'])): ?>
+                <p class="inputError"><?= $errorMessages['email'] ?></p>
+            <?php endif; ?>
+        </div>
 
-        <form action="Registration.php" method="POST" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" name="name" id="name" class="form-control <?php if ($hasErrors && isset($errorMessages['name'])) echo 'errorHighlight'; ?>">
-                <?php if ($hasErrors && isset($errorMessages['name'])): ?>
-                    <p class="inputError"><?= $errorMessages['name'] ?></p>
-                <?php endif; ?>
-            </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" class="form-control <?php if ($hasErrors && isset($errorMessages['password'])) echo 'errorHighlight'; ?>">
+            <?php if ($hasErrors && isset($errorMessages['password'])): ?>
+                <p class="inputError"><?= $errorMessages['password'] ?></p>
+            <?php endif; ?>
+        </div>
 
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" name="email" id="email" class="form-control <?php if ($hasErrors && isset($errorMessages['email'])) echo 'errorHighlight'; ?>">
-                <?php if ($hasErrors && isset($errorMessages['email'])): ?>
-                    <p class="inputError"><?= $errorMessages['email'] ?></p>
-                <?php endif; ?>
-            </div>
+        <div class="form-group">
+            <label for="confirm_password">Confirm password</label>
+            <input type="password" name="confirm_password" id="confirm_password" class="form-control <?php if ($hasErrors && isset($errorMessages['confirm_password'])) echo 'errorHighlight'; ?>">
+            <?php if ($hasErrors && isset($errorMessages['confirm_password'])): ?>
+                <p class="inputError"><?= $errorMessages['confirm_password'] ?></p>
+            <?php endif; ?>
+        </div>
+        <div class="field-group">
+            <label for="avatar">User Avatar</label>
+            <input type="file" id="avatar" name="avatar" />
+            <?php if($hasErrors && isset($errorMessages['avatar'])): ?>
+                <p class="inputError"><?= $errorMessages['avatar'] ?></p>
+            <?php endif; ?>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Register</button>
+        <p>Registered? <a href="Loginform.php">Login here</a></p>
+    </form>
+</div>
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" name="password" id="password" class="form-control <?php if ($hasErrors && isset($errorMessages['password'])) echo 'errorHighlight'; ?>">
-                <?php if ($hasErrors && isset($errorMessages['password'])): ?>
-                    <p class="inputError"><?= $errorMessages['password'] ?></p>
-                <?php endif; ?>
-            </div>
-
-            <div class="form-group">
-                <label for="confirm_password">Confirm password</label>
-                <input type="password" name="confirm_password" id="confirm_password" class="form-control <?php if ($hasErrors && isset($errorMessages['confirm_password'])) echo 'errorHighlight'; ?>">
-                <?php if ($hasErrors && isset($errorMessages['confirm_password'])): ?>
-                    <p class="inputError"><?= $errorMessages['confirm_password'] ?></p>
-                <?php endif; ?>
-            </div>
-            <div class="form-group">
-                    <label for="avatar">User Avatar</label>
-                    <input type="file" id="avatar" name="avatar" />
-                    <?php if($hasErrors && isset($errorMessages['errors']['avatar'])): ?>
-						<p class="inputError"><?= $errorMessages['errors']['avatar'] ?></p>
-					<?php endif; ?>
-            </div>
-            
-            <button type="submit" class="btn btn-primary">Register</button>
-            <p>Registered? <a href="Loginform.php">Login here</a></p>
-        </form>
-    </div>
-
-    <?php
-    unset($_SESSION['status']);
-    unset($_SESSION['errors']);
-    unset($_SESSION['message']);
-    ?>
+<?php
+unset($_SESSION['status']);
+unset($_SESSION['errors']);
+unset($_SESSION['message']);
+?>
 
 </body>
 </html>

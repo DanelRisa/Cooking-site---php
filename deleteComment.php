@@ -3,14 +3,14 @@ session_start();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     require_once 'common/connect.php'; 
-
     $comment_id = $_POST['comment_id'] ?? '';
     $user_role = $_SESSION['user']['role'] ?? ''; 
     $user_id = $_SESSION['user']['id'] ?? ''; 
-
+    
     if ($comment_id && $user_role && $user_id) {
         $result = deleteComment($comment_id, $user_role, $user_id);
-
+        var_dump($post_id);
+        
         if ($result) {
             $post_id = $_POST['post_id'] ?? ''; 
             if ($post_id) {

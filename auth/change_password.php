@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['confirm_new_password'] = 'Passwords do not match';
     }
 
-    if (empty($errors)) {
+    if (!empty($errors)) {
         if (md5($currentPassword) !== $user['password']) {
             $errors['current_password'] = 'Incorrect old password';
         }

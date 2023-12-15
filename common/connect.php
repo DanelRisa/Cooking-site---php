@@ -1,10 +1,56 @@
 <?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "narxoz";
 
-	try {
-		$pdo = new PDO("mysql:host=localhost;dbname=narxoz;", "root", "");
-	}catch(PDOException $ex){
-		echo $ex->getMessage();
-	}
+try {
+    $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $ex) {
+    echo "Connection failed: " . $ex->getMessage();
+    die();
+}
+
+function addFav($user_id, $post_id) {
+    global $pdo;
+
+    if (isPostFavorited($post_id, $user_id)) {
+        echo "This post is already favorited by the user.";
+        return false;
+    }
+
+    $queryObj = $pdo->prepare("INSERT INTO favorites (user_id, post_id) VALUES (:user_id, :post_id)");
+
+    try {
+        $queryObj->execute([
+            'user_id' => $user_id,
+            'post_id' => $post_id,
+        ]);
+        return true;
+    } catch (PDOException $ex) {
+        echo $ex->getMessage();
+        return false;
+    }
+}
+
+function isPostFavorited($post_id, $user_id) {
+    global $pdo;
+
+    $query = $pdo->prepare("SELECT * FROM favorites WHERE post_id = :post_id AND user_id = :user_id");
+
+    try {
+        $query->execute([
+            'post_id' => $post_id,
+            'user_id' => $user_id,
+        ]);
+        $result = $query->fetch(PDO::FETCH_ASSOC);
+        return $result ? true : false;
+    } catch (PDOException $ex) {
+        echo $ex->getMessage();
+        return false;
+    }
+}
 
 	function registerUser($email, $password, $name, $avatar='no-ava.jpg', $role='user'){
 
@@ -154,6 +200,22 @@
 		}
 		else{
 			$queryObj = $pdo->query("select * from posts");
+		}
+
+		
+		$posts = $queryObj->fetchAll(PDO::FETCH_ASSOC);
+		return $posts;
+	}
+
+	function searchUsers($search){
+		global $pdo;
+
+		if($search){
+			$queryObj = $pdo->prepare("select * from users where email like :search");
+			$queryObj->execute(['search' => '%'.$search.'%']);
+		}
+		else{
+			$queryObj = $pdo->query("select * from users");
 		}
 
 		
@@ -318,6 +380,86 @@
 				return false;
 			}	
 		}
+
+		function getFavPosts($user_id) {
+			global $pdo;
+		
+			$queryObj = $pdo->prepare("SELECT posts.*, users.name AS user_name FROM posts INNER JOIN favorites ON posts.id = favorites.post_id INNER JOIN users ON posts.user_id = users.id WHERE favorites.user_id = :user_id");
+			
+			try {
+				$queryObj->execute(['user_id' => $user_id]);
+				$favPosts = $queryObj->fetchAll(PDO::FETCH_ASSOC);
+				return $favPosts;
+			} catch (PDOException $ex) {
+				echo $ex->getMessage();
+				return [];
+			}
+		}
+
+		function removeFav($user_id, $post_id) {
+			global $pdo;
+		
+			$queryObj = $pdo->prepare("DELETE FROM favorites WHERE user_id = :user_id AND post_id = :post_id");
+		
+			try {
+				$queryObj->execute([
+					'user_id' => $user_id,
+					'post_id' => $post_id,
+				]);
+				return true;
+			} catch (PDOException $ex) {
+				echo $ex->getMessage();
+				return false;
+			}
+		}
+
+		function banUser($user_id, $ban_duration_minutes) {
+			global $pdo;
+			date_default_timezone_set('Asia/Almaty');
+			$ban_until = date('Y-m-d H:i:s', strtotime("+$ban_duration_minutes minutes"));
+		
+			$queryObj = $pdo->prepare("UPDATE users SET banned_until = :ban_until WHERE id = :user_id");
+			try {
+				$queryObj->execute([
+					'user_id' => $user_id,
+					'ban_until' => $ban_until,
+				]);
+				return true;
+			} catch (PDOException $ex) {
+				echo "An error occurred: " . $ex->getMessage();
+				return false;
+			}
+		}
+		
+		
+		function isBanExpired($banned_until) {
+			date_default_timezone_set('Asia/Almaty');
+			if(strtotime($banned_until) > time()){
+				return false; 
+			} else {
+				return true; 
+			}
+		}
+		function removeBan($user_id) {
+			global $pdo;
+
+			$queryObj = $pdo->prepare("UPDATE users SET banned_until = NULL WHERE id = :user_id");
+
+			try {
+				$queryObj->execute(['user_id' => $user_id]);
+				return true;
+			} catch (PDOException $ex) {
+				echo "An error occurred: " . $ex->getMessage();
+				return false;
+			}
+}
+
+		
+		
+		
+		
+		
+
 		
 
 ?>

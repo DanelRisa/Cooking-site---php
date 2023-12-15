@@ -19,3 +19,39 @@
         margin-top: 10px;
     }
 
+    .rating {
+        display: flex;
+        flex-direction: row-reverse;
+    }
+    
+    .rating input {
+        display: none;
+    }
+    
+    .rating label {
+        cursor: pointer;
+        padding: 5px;
+        font-size: 25px;
+        color: #ddd;
+    }
+    
+    .rating input:checked ~ label {
+        color: gold;
+    }
+
+    .rating input[type="submit"] {
+        display: none; /* Hide the actual submit buttons */
+    }
+    
+    .rating label {
+        cursor: pointer;
+    }
+    
+    .rating input[type="submit"]:checked + label,
+    .rating input[type="submit"]:hover + label,
+    .rating input[type="submit"]:checked ~ input[type="submit"] + label,
+    .rating input[type="submit"]:hover ~ input[type="submit"] + label {
+        color: orange; /* Change the color to orange (you can use any color you prefer) */
+    }
+    
+    

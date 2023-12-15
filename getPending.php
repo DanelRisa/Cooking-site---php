@@ -2,6 +2,8 @@
 session_start();
 require_once 'common/check_login.php';
 require_once 'common/connect.php';
+require_once 'common/checkNav.php';
+
 
 $categories = getCategories();
 
@@ -53,7 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <?php require_once 'common/nav.php'; ?>
     <div class="container py-4">
         <div class="row">
             <div class="col-lg-8">
